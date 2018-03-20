@@ -1778,15 +1778,11 @@ elseif msg_type == 'MSG:NewUserAdd' then
 if msg.content_.ID == "MessageChatAddMembers" then
             if msg.content_.members_[0].type_.ID == 'UserTypeBot' then
       if database:get('bot:bots:mute'..msg.chat_id_) and not is_mod(msg.content_.members_[0].id_, msg.chat_id_) then
-function moody(extra, result, success)
-bot.changeChatMemberStatus(msg.chat_id_, msg.content_.members_[0].id_, "Left")
 chat_kick(msg.chat_id_,msg.content_.members_[0].id_)
      return false
     end
  end
  end
-  bot.channel_get_kicked(msg.chat_id_,moody)
-  end
    if is_banned(msg.content_.members_[0].id_, msg.chat_id_) then
 		 chat_kick(msg.chat_id_, msg.content_.members_[0].id_)
 		 return false
@@ -1795,16 +1791,13 @@ chat_kick(msg.chat_id_,msg.content_.members_[0].id_)
        if msg.content_.ID == "MessageChatAddMembers" then
             if msg.content_.members_[0].type_.ID == 'UserTypeBot' then
       if database:get('bot:bots:ban'..msg.chat_id_) and not is_mod(msg.content_.members_[0].id_, msg.chat_id_) then
-function moody(extra, result, success)
-bot.changeChatMemberStatus(msg.chat_id_, msg.content_.members_[0].id_, "Left")
 		 chat_kick(msg.chat_id_, msg.content_.members_[0].id_)
 		 chat_kick(msg.chat_id_, msg.sender_user_id_)
+         send(msg.chat_id_, msg.id_, 1, "☑┇تم طرد البوت\n👤┇والعضو الذي اضاف البوت\n❕┇بسبب اضافه البوتات", 1, 'html')
      return false
     end
  end
  end
-  bot.channel_get_kicked(msg.chat_id_,moody)
-  end
    if is_banned(msg.content_.members_[0].id_, msg.chat_id_) then
 		 chat_kick(msg.chat_id_, msg.content_.members_[0].id_)
 		 return false
@@ -10370,6 +10363,13 @@ end
   end
 local text = msg.content_.text_:gsub('نعم','yes')
 if text:match("^[Yy][Ee][Ss]$") then
+	if is_vip(msg.sender_user_id_, msg.chat_id_) then
+  if database:get('bot:lang:'..msg.chat_id_) then
+   send(msg.chat_id_, msg.id_, 1, '*I Can,t [Kick/Ban] Moderators!!*', 1, 'md')
+ else
+send(msg.chat_id_, msg.id_, 1, '❕┇لا استطيع طرد \n🔘┇(مدراء،ادمنيه،اعضاء مميزين)البوت', 1, 'md')
+end
+else
 local yess = redis:get('kickyess'..msg.sender_user_id_..''..bot_id)
 if yess == 'kickyes' then
 chat_kick(msg.chat_id_, msg.sender_user_id_)
@@ -10380,6 +10380,7 @@ send(msg.chat_id_, msg.id_, 1, '_> You have been kicked', 1, 'md')
 else
 send(msg.chat_id_, msg.id_, 1, '✅┇تم طردك من المجموعه', 1, 'md')
 end
+  end
   end
 end
 local text = msg.content_.text_:gsub('لا','no')
